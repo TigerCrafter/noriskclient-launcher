@@ -3,6 +3,7 @@
   import { onMount } from "svelte";
   import { openDiscordIntegration } from "../../../utils/discordUtils.js";
   import { get } from "svelte/store";
+  import { push } from "svelte-spa-router";
   import { branches } from "../../../stores/branchesStore.js";
   import { launcherOptions } from "../../../stores/optionsStore.js";
   import { invoke } from "@tauri-apps/api";
@@ -26,6 +27,11 @@
           }
         },
         condition: () => get(branches).length > 0 && get(defaultUser) != null,
+      },
+      {
+        name: "LEGAL-INFO",
+        onClick: () => push("/legal"),
+        condition: () => true,
       }
     ];
   }
@@ -105,7 +111,7 @@
   .topleft {
     position: absolute;
     top: 0;
-    left: 0;
+    right: 0;
   }
 
   .home-navbar-wrapper {
@@ -113,7 +119,7 @@
     padding: 10px;
     display: flex;
     flex-direction: column;
-    align-items: start;
+    align-items: end;
     pointer-events: all;
   }
 
@@ -130,6 +136,6 @@
   .home-navbar-wrapper h1:hover {
     color: var(--hover-color);
     text-shadow: 1px 1px var(--hover-color-text-shadow);
-    transform: scale(1.2) translateX(12.5px) perspective(1px);
+    transform: scale(1.2) translateX(-12.5px) perspective(1px);
   }
 </style>

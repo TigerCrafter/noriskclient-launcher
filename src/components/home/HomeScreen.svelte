@@ -5,7 +5,7 @@
   import NoRiskLogoColor from "../../images/norisk_logo_color.png";
   import CopyrightLabel from "./widgets/CopyrightLabel.svelte";
   import HomeNavbar from "./widgets/HomeNavbar.svelte";
-  import HomeLeftNavbar from "./widgets/HomeLeftNavbar.svelte";
+  import HomeRightNavbar from "./widgets/HomeRightNavbar.svelte";
   import CreditModal from "./widgets/CreditsModal.svelte";
 
   let showCreditsModal = false;
@@ -19,8 +19,8 @@
   <CreditModal bind:showModal={showCreditsModal} />
 {/if}
 <div class="home-wrapper">
-  <HomeLeftNavbar />
   <HomeNavbar />
+  <HomeRightNavbar />
   <!-- svelte-ignore a11y-click-events-have-key-events -->
   <img class="pokemon-title title-effect" src={NoRiskLogoColor} alt="Pokemon Title" on:click={showCredits}>
   <BranchSwitcher />

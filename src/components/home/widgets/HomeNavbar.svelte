@@ -17,55 +17,58 @@
   function updateNavItems() {
     navItems = [
       {
-        name: "LEGAL-INFO",
-        onClick: () => push("/legal"),
-        condition: () => true,
-      },
-      {
-        name: "SETTINGS",
-        onClick: () => push("/launcher-settings"),
-        condition: true
-      },
-      {
         name: "PROFILES",
         onClick: () => push("/profiles"),
+        image: "src/images/navbar/icons/profiles.png",
         condition: () => get(branches).length > 0 && get(defaultUser) != null,
       },
       {
         name: "SERVERS",
         onClick: () => push("/servers"),
+        image: "src/images/navbar/icons/servers.png",
         condition: () => get(branches).length > 0 && get(defaultUser) != null,
       },
       {
         name: "ADDONS",
         onClick: () => push("/addons"),
+        image: "src/images/navbar/icons/addons.png",
         condition: () => get(branches).length > 0 && get(defaultUser) != null,
       },
       {
         name: "INVITE",
         onClick: openInviteFriendsPopup,
+        image: "src/images/navbar/icons/invite.png",
         condition: () => get(branches).length > 0 && get(defaultUser) != null && $featureWhitelist.includes("INVITE_FRIENDS") && friendInviteSlots.availableSlots == -1,
       },
       {
         name: "CAPES",
         onClick: () => push("/capes"),
+        image: "src/images/navbar/icons/capes.png",
         condition: () => get(branches).length > 0 && get(defaultUser) != null,
       },
       {
         name: "SKIN",
         onClick: () => push("/skin"),
+        image: "src/images/navbar/icons/skin.png",
         condition: () => get(defaultUser) != null,
       },
       {
-        name: "QUIT",
-        onClick: () => appWindow.close(),
-        condition: true,
-        className: "quit",
+        name: "SETTINGS",
+        onClick: () => push("/launcher-settings"),
+        className:  "settings",
+        image: "src/images/navbar/icons/settings.png",
+        condition: true
       },
     ];
   }
 
+  let showNavBar = false;
 
+  function toggleNavItems() {
+    showNavBar = !showNavBar
+  }
+  
+  
   onMount(async () => {
     const branchesUnlisten = branches.subscribe(async value => {
       updateNavItems();
@@ -129,22 +132,34 @@
   }
 </script>
 
+
 <div class="container">
-  <div class="home-navbar-wrapper topleft">
-    {#if $featureWhitelist.includes("INVITE_FRIENDS") && friendInviteSlots.availableSlots !== -1 && friendInviteSlots.availableSlots - friendInviteSlots.previousInvites > 0}
-      <!-- svelte-ignore a11y-click-events-have-key-events -->
-      <h1 class="invite-button" on:click={openInviteFriendsPopup}>
-        <p>✨ INVITE ✨</p>
-      </h1>
-    {/if}
-    {#each navItems as item (item.name)}
-      {#if typeof item.condition === 'function' ? item.condition() : item.condition}
+  <div class="topleft">
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <h1 class="toggle-button" on:click={toggleNavItems}>
+      {showNavBar ? 'MENU ←' : 'MENU →'}
+    </h1>
+    <div class="home-navbar-wrapper" style="transform: {showNavBar ? 'translateX(0)' : 'translateX(-100%)'};">
+      {#if $featureWhitelist.includes("INVITE_FRIENDS") && friendInviteSlots.availableSlots !== -1 && friendInviteSlots.availableSlots - friendInviteSlots.previousInvites > 0}
         <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <h1 class={item.className || ''} on:click={item.onClick}>
-          {item.name}
+        <h1 class="invite-button" on:click={openInviteFriendsPopup}>
+          <p>✨ INVITE ✨</p>
         </h1>
       {/if}
-    {/each}
+        {#each navItems as item (item.name)}
+          {#if typeof item.condition === 'function' ? item.condition() : item.condition}
+          <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <div  class={item.className || ''} on:click={item.onClick}>
+              {#if item.image && item.image !== ''}
+                <img src={item.image} alt={item.name} />
+              {/if}
+              <h1>
+                {item.name}
+              </h1>
+            </div>
+          {/if}
+        {/each}
+    </div>
   </div>
 </div>
 
@@ -159,40 +174,74 @@
   .topleft {
     position: absolute;
     top: 0;
-    right: 0;
+    left: 0;
+    bottom: 0;
   }
 
-  .home-navbar-wrapper {
-    width: 50%;
-    position: absolute;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: end;
+  .toggle-button {
     pointer-events: all;
-    overflow: hidden;
-  }
-
-  .home-navbar-wrapper h1 {
-    font-size: 11px;
+    font-size: 11.5px;
     font-family: 'Press Start 2P', serif;
     margin-bottom: 1em;
     cursor: pointer;
     color: var(--secondary-color);
     text-shadow: 1px 1px var(--secondary-color-text-shadow);
-    transition: transform 0.3s, color 0.25s, text-shadow 0.25s;
+    transition: transform 0.15s, color 0.25s, text-shadow 0.25s;
+  }
+
+  .home-navbar-wrapper {
+    width: 200%;
+    bottom: 0;
+    top: 2.5%;
+    position: absolute;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    pointer-events: all;
+    overflow: hidden;
+    transition: transform 1s;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    background-color: rgb(0, 145, 255);
+  }
+
+  .home-navbar-wrapper div {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1em;
+  }
+
+  .home-navbar-wrapper h1 {
+    font-size: 11.5px;
+    font-family: 'Press Start 2P', serif;
+    margin-bottom: 1em;
+    cursor: pointer;
+    color: var(--secondary-color);
+    text-shadow: 1px 1px var(--secondary-color-text-shadow);
+    transition: transform 0.15s, color 0.25s, text-shadow 0.25s;
+  }
+
+  .home-navbar-wrapper img {
+    max-height: 16px;
+    margin-bottom: 10px;
+    margin-right: 5px;
+    transition: transform 0.15s;
+  }
+  
+  .home-navbar-wrapper img:hover {
+    transform: scale(1.2);
   }
 
   .home-navbar-wrapper h1:hover {
     color: var(--hover-color);
     text-shadow: 1px 1px var(--hover-color-text-shadow);
-    transform: scale(1.2) translateX(-10px) perspective(1px);
+    transform: scale(1.1) translateX(8px) perspective(1px);
   }
 
-  .home-navbar-wrapper h1.quit:hover {
-    color: red;
-    text-shadow: 1px 1px #460000;
-    transform: scale(1.2) perspective(1px);
+  .home-navbar-wrapper div.settings {
+    position: absolute;
+    bottom: 0;
   }
 
   .home-navbar-wrapper h1.invite-button {

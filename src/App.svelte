@@ -1,5 +1,6 @@
 <script>
   import Router from "./Router.svelte";
+  import Window from "./components/Window.svelte";
   import { onMount } from "svelte";
   import { defaultUser, fetchDefaultUserOrError } from "./stores/credentialsStore.js";
   import { fetchOptions } from "./stores/optionsStore.js";
@@ -67,6 +68,7 @@
 </script>
 
 <main>
+  <Window />
   <Router />
 </main>
 
